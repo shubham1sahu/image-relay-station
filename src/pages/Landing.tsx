@@ -270,8 +270,7 @@ const Landing = () => {
               <h3 className="font-semibold mb-4">Deepfake Detection Tools</h3>
               <ul className="space-y-2 text-sm">
                 <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Deepfake Image Detection</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Deepfake Video Detection</a></li>
-                <li><a href="#" className="text-muted-foreground hover:text-foreground transition-colors">Deepfake Voice Detection</a></li>
+                
               </ul>
             </div>
 
@@ -285,7 +284,8 @@ const Landing = () => {
 
             <div>
               <h3 className="font-semibold mb-4">Contact</h3>
-              <p className="text-sm text-muted-foreground">en22cs301945@medicaps.ac.in</p>
+              <p className="text-sm text-muted-foreground">en22cs301945@medicaps.ac.in </p>
+              <p className="text-sm text-muted-foreground">en22cs301954@medicaps.ac.in </p>
             </div>
           </div>
 
