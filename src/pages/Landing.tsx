@@ -285,9 +285,9 @@ const Landing = () => {
 
             <div>
               <h3 className="font-semibold mb-4">Contact</h3>
-              <p className="text-sm text-muted-foreground">hello@deepfakedetection.io</p>
+              <p className="text-sm text-muted-foreground">en22cs301945@medicaps.ac.in</p>
             </div>
-          </div>
+          </div>cs
 
           <div className="border-t border-border mt-8 pt-8 text-center">
             <p className="text-sm text-muted-foreground">© 2025 Deepfake Detection. All rights reserved.</p>
