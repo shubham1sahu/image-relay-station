@@ -157,7 +157,7 @@ const Landing = () => {
                 Try Deepfake Image Detection <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
-            <div className="h-96 bg-muted rounded-lg"></div>
+            <div className="h-96 bg-muted rounded-lg"><img src={preventingScams} alt="How to use deepfake detection" className="h-96 bg-muted rounded-lg" /></div>
           </div>
         </div>
       </section>
