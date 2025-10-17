@@ -1,6 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Search, Brain, CheckCircle2, Lock, Upload, ArrowRight, Star } from "lucide-react";
+import heroExample from "@/assets/hero-example.png";
+import carouselUseCases from "@/assets/carousel-use-cases.png";
+import howToUse from "@/assets/how-to-use.png";
+import socialMedia from "@/assets/social-media.png";
+import preventingScams from "@/assets/preventing-scams.png";
+import remoteHiring from "@/assets/remote-hiring.png";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -40,24 +46,9 @@ const Landing = () => {
               content with real-time analysis, designed for security and simplicity.
             </p>
             
-            {/* Tabs */}
-            <div className="inline-flex rounded-lg border border-border p-1 mb-8">
-              <button className="px-6 py-2 rounded-md bg-primary text-primary-foreground font-medium">
-                Image
-              </button>
-              <button className="px-6 py-2 rounded-md text-muted-foreground hover:text-foreground transition-colors">
-                Video
-              </button>
-              <button className="px-6 py-2 rounded-md text-muted-foreground hover:text-foreground transition-colors">
-                Voice
-              </button>
-            </div>
-
-            {/* Upload Area */}
-            <div className="border-2 border-dashed border-border rounded-lg p-12 mb-8 hover:border-primary transition-colors cursor-pointer">
-              <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground mb-2">Drag & drop an image or click to upload</p>
-              <p className="text-sm text-muted-foreground">PNG, JPG, WEBP up to 3 MB</p>
+            {/* Hero Image Example */}
+            <div className="mb-8">
+              <img src={heroExample} alt="Deepfake detection example" className="rounded-lg shadow-lg mx-auto" />
             </div>
 
             <Button size="lg" onClick={handleStartTrial} className="mb-8">
@@ -89,9 +80,10 @@ const Landing = () => {
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               Deepfake Image Detection in Action: Protecting Your Assets
             </h2>
-            <p className="text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-muted-foreground max-w-3xl mx-auto mb-8">
               Learn how our deepfake detection technology helped an influencer avoid identity theft by identifying fake images used in a fraudulent campaign.
             </p>
+            <img src={carouselUseCases} alt="Deepfake detection use cases" className="rounded-lg shadow-lg mx-auto" />
           </div>
         </div>
       </section>
@@ -106,46 +98,7 @@ const Landing = () => {
             It's super easy. Just upload a photo, let our AI Deepfake Image Detection do the work, and get a full report in seconds. You'll see what's real, what's not—and why. No tech skills needed. No sign-up. No stress.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <div className="text-center">
-              <div className="mb-4">
-                <Upload className="h-12 w-12 text-primary mx-auto" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center gap-2">
-                <span className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm">1</span>
-                Step 1: Upload Your Image
-              </h3>
-              <p className="text-muted-foreground">
-                Click the upload button and select any photo you want to check. You can drag and drop too. We support JPG, PNG, and even some edited screenshots. No need to sign up. No hidden steps. Just pick your image and go.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="mb-4">
-                <Brain className="h-12 w-12 text-primary mx-auto" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center gap-2">
-                <span className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm">2</span>
-                Step 2: Detect Image
-              </h3>
-              <p className="text-muted-foreground">
-                Once uploaded, our AI Deepfake Image Detection gets to work fast. It scans for clues like lighting, shadows, pixel noise, and face textures. Then it compares these to deepfake patterns trained from thousands of real and fake images. It's kinda like a lie detector—but for pictures.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <div className="mb-4">
-                <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 flex items-center justify-center gap-2">
-                <span className="h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm">3</span>
-                Step 3: Review the Detection Report
-              </h3>
-              <p className="text-muted-foreground">
-                In just a few seconds, you'll see a summary showing the authenticity score—how likely the image is real or fake. We also give you a short version (for quick checks) and a detailed report (for curious minds). I honestly love how clear it is.
-              </p>
-            </div>
-          </div>
+          <img src={howToUse} alt="How to use deepfake detection" className="rounded-lg shadow-lg mx-auto max-w-5xl" />
         </div>
       </section>
 
@@ -158,7 +111,7 @@ const Landing = () => {
             </Button>
             
             <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="h-96 bg-muted rounded-lg"></div>
+              <img src={socialMedia} alt="Spotting fake photos on social media" className="rounded-lg shadow-lg" />
               <div>
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">
                   Spotting Fake Photos on Social Media
@@ -199,7 +152,7 @@ const Landing = () => {
       <section className="py-16 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8 items-center">
-            <div className="h-96 bg-muted rounded-lg"></div>
+            <img src={remoteHiring} alt="Verifying identity in remote hiring" className="rounded-lg shadow-lg" />
             <div>
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
                 Verifying Identity in Remote Hiring
