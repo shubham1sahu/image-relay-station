@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { Search, Brain, CheckCircle2, Lock, Upload, ArrowRight, Star } from "lucide-react";
-import heroExample from "@/assets/hero-example.png";
+import exampleReal from "@/assets/example-real.jpg";
+import exampleFake from "@/assets/example-fake.jpg";
 import carouselUseCases from "@/assets/carousel-use-cases.png";
 import howToUse from "@/assets/how-to-use.png";
 import socialMedia from "@/assets/social-media.png";
@@ -46,10 +47,23 @@ const Landing = () => {
               content with real-time analysis, designed for security and simplicity.
             </p>
             
-            {/* Hero Image Example */}
-            <div className="mb-8">
-              <img src={heroExample} alt="Deepfake detection example" className="rounded-lg shadow-lg mx-auto" />
+            {/* Example Images */}
+            <div className="flex gap-6 justify-center mb-8 max-w-3xl mx-auto">
+              <div className="relative flex-1">
+                <img src={exampleFake} alt="Deepfake example" className="rounded-lg shadow-lg w-full" />
+                <span className="absolute bottom-4 left-4 bg-destructive text-destructive-foreground px-3 py-1 rounded-md font-semibold">
+                  Fake
+                </span>
+              </div>
+              <div className="relative flex-1">
+                <img src={exampleReal} alt="Real photo example" className="rounded-lg shadow-lg w-full" />
+                <span className="absolute bottom-4 left-4 bg-green-600 text-white px-3 py-1 rounded-md font-semibold">
+                  True
+                </span>
+              </div>
             </div>
+            
+            <p className="text-sm text-muted-foreground mb-8">Or try with example images:</p>
 
             <Button size="lg" onClick={handleStartTrial} className="mb-8">
               Detect Forgery
