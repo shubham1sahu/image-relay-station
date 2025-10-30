@@ -33,7 +33,7 @@ serve(async (req) => {
     formData.append("file", blob, "image.jpg");
 
     // Call the deepfake detection API
-    const response = await fetch("https://deepfakedetection.io/api/detect-image", {
+    const response = await fetch("https://isgen.ai/ai-image-detector", {
       method: "POST",
       body: formData,
     });
