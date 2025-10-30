@@ -28,7 +28,6 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-<<<<<<< HEAD
     // Create FormData for the external API
     const formData = new FormData();
     formData.append("file", blob, "image.jpg");
@@ -38,10 +37,6 @@ serve(async (req) => {
     console.log("Calling API:", apiUrl);
     
     const response = await fetch(apiUrl, {
-=======
-    // Call Lovable AI for image analysis using the Pro model for better vision capabilities
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
->>>>>>> cdd02b7a0ee47ec74ac5759cd622a768d5c1f212
       method: "POST",
       headers: {
         "Authorization": `Bearer ${LOVABLE_API_KEY}`,
@@ -75,24 +70,15 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-<<<<<<< HEAD
       console.error("External API error:", response.status, errorText);
       
       return new Response(
         JSON.stringify({ 
           error: "API request failed", 
-=======
-      console.error("AI API error:", response.status, errorText);
-      
-      return new Response(
-        JSON.stringify({ 
-          error: "AI analysis failed", 
->>>>>>> cdd02b7a0ee47ec74ac5759cd622a768d5c1f212
           status: response.status,
           details: errorText 
         }),
         { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-<<<<<<< HEAD
       );
     }
 
@@ -126,51 +112,6 @@ serve(async (req) => {
     };
 
     // Return the transformed result
-=======
-      );
-    }
-
-    const aiResponse = await response.json();
-    console.log("AI Response:", JSON.stringify(aiResponse));
-
-    // Extract the analysis from AI response
-    const aiContent = aiResponse.choices?.[0]?.message?.content;
-    if (!aiContent) {
-      throw new Error("No content in AI response");
-    }
-
-    // Parse the JSON from AI response
-    let analysisData;
-    try {
-      // Extract JSON from potential markdown code blocks
-      const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        analysisData = JSON.parse(jsonMatch[0]);
-      } else {
-        analysisData = JSON.parse(aiContent);
-      }
-    } catch (e) {
-      console.error("Failed to parse AI response as JSON:", aiContent);
-      // Fallback: try to extract information from text
-      analysisData = {
-        ai_probability: 0.5,
-        confidence: "Low",
-        reasoning: "Unable to parse AI response"
-      };
-    }
-
-    // Transform to expected format
-    const score = Math.round((analysisData.ai_probability || 0.5) * 100);
-    const transformedData = {
-      score: score,
-      isDeepfake: score > 50,
-      confidence: analysisData.confidence || (score > 80 ? "High" : score > 50 ? "Medium" : "Low"),
-      reasoning: analysisData.reasoning || "Analysis complete"
-    };
-
-    console.log("Detection result:", transformedData);
-
->>>>>>> cdd02b7a0ee47ec74ac5759cd622a768d5c1f212
     return new Response(
       JSON.stringify(transformedData),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }

@@ -286,6 +286,7 @@ const Landing = () => {
               <h3 className="font-semibold mb-4">Contact</h3>
               <p className="text-sm text-muted-foreground">en22cs301945@medicaps.ac.in </p>
               <p className="text-sm text-muted-foreground">en22cs301954@medicaps.ac.in </p>
+              <p className="text-sm text-muted-foreground">en22cs301958@medicaps.ac.in </p>
             </div>
           </div>
 
