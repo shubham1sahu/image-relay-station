@@ -21,37 +21,49 @@ serve(async (req) => {
       );
     }
 
-    console.log("Processing deepfake detection request");
+    console.log("Processing deepfake detection request with AI");
 
-    // Convert base64 to blob for the external API
-    const base64Data = image.split(",")[1] || image;
-    const binaryData = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
-    const blob = new Blob([binaryData], { type: "image/jpeg" });
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
+    }
 
-    // Create FormData for the external API
-    const formData = new FormData();
-    formData.append("file", blob, "image.jpg");
-
-    // Call the deepfake detection API
-    const apiUrl = "https://isgen.ai/api/v1/detect";
-    console.log("Calling API:", apiUrl);
-    
-    const response = await fetch(apiUrl, {
+    // Call Lovable AI for image analysis
+    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
-      body: formData,
+      headers: {
+        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "google/gemini-2.5-flash",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: "Analyze this image carefully and determine if it appears to be AI-generated, manipulated, or a deepfake. Consider factors like: unnatural artifacts, inconsistent lighting, distorted features, unrealistic textures, or other signs of AI generation. Provide your analysis as a JSON object with: 1) 'ai_probability' (0-1 scale, where 1 is definitely AI-generated), 2) 'confidence' (High/Medium/Low), 3) 'reasoning' (brief explanation). Return ONLY valid JSON, no other text."
+              },
+              {
+                type: "image_url",
+                image_url: {
+                  url: image
+                }
+              }
+            ]
+          }
+        ]
+      })
     });
-
-    const contentType = response.headers.get("content-type");
-    console.log("API Response status:", response.status);
-    console.log("API Response content-type:", contentType);
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("External API error:", response.status, errorText);
+      console.error("AI API error:", response.status, errorText);
       
       return new Response(
         JSON.stringify({ 
-          error: "API request failed", 
+          error: "AI analysis failed", 
           status: response.status,
           details: errorText 
         }),
@@ -59,36 +71,46 @@ serve(async (req) => {
       );
     }
 
-    // Try to parse as JSON, if it fails return the raw text
-    const responseText = await response.text();
-    console.log("API Response body:", responseText);
+    const aiResponse = await response.json();
+    console.log("AI Response:", JSON.stringify(aiResponse));
 
-    let data;
-    try {
-      data = JSON.parse(responseText);
-    } catch (e) {
-      console.error("Failed to parse JSON:", e);
-      return new Response(
-        JSON.stringify({ 
-          error: "Invalid JSON response from API",
-          rawResponse: responseText.substring(0, 500) // First 500 chars
-        }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+    // Extract the analysis from AI response
+    const aiContent = aiResponse.choices?.[0]?.message?.content;
+    if (!aiContent) {
+      throw new Error("No content in AI response");
     }
 
-    console.log("Detection result:", data);
+    // Parse the JSON from AI response
+    let analysisData;
+    try {
+      // Extract JSON from potential markdown code blocks
+      const jsonMatch = aiContent.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        analysisData = JSON.parse(jsonMatch[0]);
+      } else {
+        analysisData = JSON.parse(aiContent);
+      }
+    } catch (e) {
+      console.error("Failed to parse AI response as JSON:", aiContent);
+      // Fallback: try to extract information from text
+      analysisData = {
+        ai_probability: 0.5,
+        confidence: "Low",
+        reasoning: "Unable to parse AI response"
+      };
+    }
 
-    // Transform API response to expected format
+    // Transform to expected format
+    const score = Math.round((analysisData.ai_probability || 0.5) * 100);
     const transformedData = {
-      score: Math.round((data.ai_probability || data.score || 0) * 100),
-      isDeepfake: (data.ai_probability || data.score || 0) > 0.5,
-      confidence: (data.ai_probability || data.score || 0) > 0.8 ? "High" : 
-                  (data.ai_probability || data.score || 0) > 0.5 ? "Medium" : "Low",
-      rawData: data // Include raw data for debugging
+      score: score,
+      isDeepfake: score > 50,
+      confidence: analysisData.confidence || (score > 80 ? "High" : score > 50 ? "Medium" : "Low"),
+      reasoning: analysisData.reasoning || "Analysis complete"
     };
 
-    // Return the transformed result
+    console.log("Detection result:", transformedData);
+
     return new Response(
       JSON.stringify(transformedData),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
