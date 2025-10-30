@@ -38,27 +38,45 @@ serve(async (req) => {
       body: formData,
     });
 
+    const contentType = response.headers.get("content-type");
+    console.log("API Response status:", response.status);
+    console.log("API Response content-type:", contentType);
+
     if (!response.ok) {
-      console.error("External API error:", response.status, await response.text());
-      
-      // Return mock data if external API fails
-      const mockScore = Math.floor(Math.random() * 100);
-      const isDeepfake = mockScore > 50;
+      const errorText = await response.text();
+      console.error("External API error:", response.status, errorText);
       
       return new Response(
-        JSON.stringify({
-          score: mockScore,
-          isDeepfake,
-          confidence: mockScore > 80 ? "High" : mockScore > 50 ? "Medium" : "Low",
+        JSON.stringify({ 
+          error: "API request failed", 
+          status: response.status,
+          details: errorText 
         }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: response.status, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const data = await response.json();
+    // Try to parse as JSON, if it fails return the raw text
+    const responseText = await response.text();
+    console.log("API Response body:", responseText);
+
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      return new Response(
+        JSON.stringify({ 
+          error: "Invalid JSON response from API",
+          rawResponse: responseText.substring(0, 500) // First 500 chars
+        }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     console.log("Detection result:", data);
 
-    // Parse and return the result
+    // Return the actual API result
     return new Response(
       JSON.stringify(data),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -66,17 +84,12 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in deepfake-detect function:", error);
     
-    // Return mock data on error
-    const mockScore = Math.floor(Math.random() * 100);
-    const isDeepfake = mockScore > 50;
-    
     return new Response(
       JSON.stringify({
-        score: mockScore,
-        isDeepfake,
-        confidence: mockScore > 80 ? "High" : mockScore > 50 ? "Medium" : "Low",
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : String(error),
       }),
-      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
 });
