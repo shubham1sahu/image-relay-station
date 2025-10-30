@@ -28,7 +28,7 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    // Call Lovable AI for image analysis
+    // Call Lovable AI for image analysis using the Pro model for better vision capabilities
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -36,14 +36,14 @@ serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: "google/gemini-2.5-pro", // Use Pro for better multimodal handling
         messages: [
           {
             role: "user",
             content: [
               {
                 type: "text",
-                text: "Analyze this image carefully and determine if it appears to be AI-generated, manipulated, or a deepfake. Consider factors like: unnatural artifacts, inconsistent lighting, distorted features, unrealistic textures, or other signs of AI generation. Provide your analysis as a JSON object with: 1) 'ai_probability' (0-1 scale, where 1 is definitely AI-generated), 2) 'confidence' (High/Medium/Low), 3) 'reasoning' (brief explanation). Return ONLY valid JSON, no other text."
+                text: "Analyze this image carefully for signs of AI generation or deepfake manipulation. Look for: unnatural artifacts, inconsistent lighting or shadows, distorted facial features, unrealistic textures, blending errors, or other anomalies typical of AI-generated or manipulated images. Provide a confidence score from 0-1 where 1 means definitely AI-generated/deepfake. Respond ONLY with valid JSON in this exact format: {\"ai_probability\": 0.75, \"confidence\": \"High\", \"reasoning\": \"Brief explanation of key findings\"}"
               },
               {
                 type: "image_url",
