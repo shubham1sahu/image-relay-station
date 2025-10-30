@@ -10,6 +10,7 @@ interface DetectionResult {
   score: number;
   isDeepfake: boolean;
   confidence: string;
+  reasoning?: string;
 }
 
 const Index = () => {
@@ -208,6 +209,12 @@ const Index = () => {
                       <span className="font-semibold">Confidence Level: </span>
                       {result.confidence}
                     </p>
+                    {result.reasoning && (
+                      <p className="text-sm mt-2">
+                        <span className="font-semibold">Analysis: </span>
+                        {result.reasoning}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
