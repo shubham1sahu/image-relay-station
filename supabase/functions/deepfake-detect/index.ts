@@ -33,7 +33,10 @@ serve(async (req) => {
     formData.append("file", blob, "image.jpg");
 
     // Call the deepfake detection API
-    const response = await fetch("https://isgen.ai/ai-image-detector", {
+    const apiUrl = "https://isgen.ai/api/v1/detect";
+    console.log("Calling API:", apiUrl);
+    
+    const response = await fetch(apiUrl, {
       method: "POST",
       body: formData,
     });
@@ -76,9 +79,18 @@ serve(async (req) => {
 
     console.log("Detection result:", data);
 
-    // Return the actual API result
+    // Transform API response to expected format
+    const transformedData = {
+      score: Math.round((data.ai_probability || data.score || 0) * 100),
+      isDeepfake: (data.ai_probability || data.score || 0) > 0.5,
+      confidence: (data.ai_probability || data.score || 0) > 0.8 ? "High" : 
+                  (data.ai_probability || data.score || 0) > 0.5 ? "Medium" : "Low",
+      rawData: data // Include raw data for debugging
+    };
+
+    // Return the transformed result
     return new Response(
-      JSON.stringify(data),
+      JSON.stringify(transformedData),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
